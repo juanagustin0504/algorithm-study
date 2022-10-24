@@ -6,9 +6,8 @@ int isArrived = 0;
 int dir[2][2] = {{1, 0}, {0, 1}}; // Down, Right
 
 /**
- * - dfs, bfs -
- *
- * - Param -
+ * - dfs
+ * - Param
  * N		: Board Size
  * board 	: GameBoard
  * moveCnt	: number of moves
@@ -16,10 +15,22 @@ int dir[2][2] = {{1, 0}, {0, 1}}; // Down, Right
  * y		: currunt column index
  */
 void dfs(int N, int* board[], int moveCnt, int x, int y);
-void bfs(int N, int* board[], int moveCnt, int x, int y);
+
+/**
+ * - dfs
+ * - Param
+ * N		: Board Size
+ * board 	: GameBoard
+ * moveCnt	: Number of moves
+ * x		: Currunt row index
+ * y		: Currunt column index
+ *
+ * - Return	: Result
+ */
+int bfs(int N, int* board[], int moveCnt, int x, int y);
 
 typedef struct Node {
-	int data;
+	int *data;
 	struct Node *next;
 }Node;
 
@@ -38,7 +49,7 @@ int isEmpty(Queue *queue) {
 	return queue->count == 0;
 }
 
-void enqueue(Queue *queue, int data) {
+void enqueue(Queue *queue, int *data) {
 	Node *newNode = (Node *) malloc(sizeof(Node)); // Create New Node
 	newNode->data = data;
 	newNode->next = NULL;
@@ -52,8 +63,8 @@ void enqueue(Queue *queue, int data) {
 	queue->count++;
 }
 
-int dequeue(Queue *queue) {
-	int data;
+int *dequeue(Queue *queue) {
+	int *data;
 	Node *ptr;
 	if(isEmpty(queue)) { // Queue is Empty
 		return 0;
@@ -85,12 +96,11 @@ int main() {
 	}
 	
 	// DFS
-	dfs(N, board, board[0][0], 0, 0);
+//	dfs(N, board, board[0][0], 0, 0);
+//	printf("%s", isArrived ? "HaruHaru" : "Hing");
 	// BFS
-//	bfs(N, board, board[0][0], 0, 0);
-	
-	printf("%s", isArrived ? "HaruHaru" : "Hing");
-	
+	int result = bfs(N, board, board[0][0], 0, 0);
+	printf("%s", result == 1 ? "HaruHaru" : "Hing");
 	
 	return 0;
 }
@@ -117,4 +127,42 @@ void dfs(int N, int* board[], int moveCnt, int x, int y) {
 		// Recursive funtion
 		dfs(N, board, board[nx][ny], nx, ny);
 	}
+}
+
+int bfs(int N, int* board[], int moveCnt, int x, int y) {
+	if(board[x][y] == 0) return 0;
+	
+	Queue q;
+	initQueue(&q);
+	int data[3] = {x, y, moveCnt};
+	enqueue(&q, data);
+	int result = 0;
+	
+	while(!isEmpty(&q)) {
+		int *curr = dequeue(&q);
+		int i;
+		for(i=0;i<2;i++) {
+			int nx = curr[0] + (dir[0][i] * curr[2]);
+			int ny = curr[1] + (dir[1][i] * curr[2]);
+			
+			printf("curr (%d, %d), next (%d, %d), i: %d\n", curr[0], curr[1], nx, ny, i);
+			
+			// Out of the board
+			if(nx >= N || ny >= N) continue;
+			
+			if(nx == curr[0] && ny == curr[1]) goto label;
+			
+			if(board[nx][ny] == -1) {
+				printf("Exit"); 
+				result = 1;
+				goto label;
+			}
+			
+			int newData[3] = {nx, ny, board[nx][ny]};
+			enqueue(&q, newData);
+		}
+	}
+	label:
+	
+	return result;
 }
