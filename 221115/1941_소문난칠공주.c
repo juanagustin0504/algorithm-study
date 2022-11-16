@@ -1,15 +1,15 @@
 #include <stdio.h>
 int resCnt = 0;
 
-void comb(int depth, int start, int (*map)[5], int (*visit)[5], char *result, int sCount) {
-//	printf("======================\n");
-//	printf("%d %d %d %s\n", depth, start, sCount, result);
+void comb(int depth, int start, char (*map)[5], int (*visit)[5], char *result, int sCount) {
+	printf("======================\n");
+	printf("%d %d %d %s\n", depth, start, sCount, result);
 	if(depth == 7) {
 		if(sCount >= 4) {
 			resCnt++;
 			
-			printf("%s", result);
-			printf("\n");
+//			printf("%s", result);
+//			printf("\n");
 		}
 		return;
 	}
@@ -21,8 +21,8 @@ void comb(int depth, int start, int (*map)[5], int (*visit)[5], char *result, in
 			result[depth] = map[i][j];
 			int temp = 0;
 			if (map[i][j] == 'S') temp = 1;
-			comb(depth + 1, j + (i * 5) + 1, map, visit, result, sCount + temp);
-			visit[i][j] = 0;			
+			comb(depth + 1, ((i * 5) + (j + 1)), map, visit, result, sCount + temp);
+			visit[i][j] = 0;
 		}
 	}
 }
