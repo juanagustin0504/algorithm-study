@@ -12,10 +12,7 @@ void comb(int n, int l, int r, int x, int start, int *problem, int *visit, int d
 			if(min > result[i]) min = result[i];
 			if(max < result[i]) max = result[i];
 		}
-		
-		if(max - min >= x) {
-			resCnt++;
-		}
+		if(max - min >= x) resCnt++;
 	}
 	int i;
 	for(i=start;i<n;i++) {
